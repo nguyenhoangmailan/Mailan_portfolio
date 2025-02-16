@@ -278,10 +278,7 @@ FROM financial_loan
 GROUP BY emp_length
 ORDER BY Repayment_rate_percentage DESC;
 
-select *
-from financial_loan;
-
--- Loan Purpose & Financial Risk Factors
+-- Financial Risk Factors
 
 SELECT 
     DATE_FORMAT(issue_date, '%Y-%m') AS month,
@@ -290,6 +287,19 @@ SELECT
 FROM financial_loan
 GROUP BY month
 ORDER BY month;
+
+SELECT 
+    total_acc, 
+    loan_amount, 
+    dti,
+    (CAST(total_acc AS FLOAT) / NULLIF(loan_amount, 0)) AS credit_uti_ratio,
+    AVG(dti) OVER () AS avg_dti, 
+    (CAST(total_acc AS FLOAT) / NULLIF(loan_amount, 0)) * dti AS loan_default_risk_indicator,
+    AVG(loan_amount) OVER () AS avg_loan_amount
+FROM financial_loan;
+
+SELECT *
+FROM financial_loan;
 
 	-- verification status 
     -- purpose, loan_amount, loan_status, grade    
